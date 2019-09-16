@@ -24,7 +24,7 @@ function(req) {
     model_path <- paste(prefix, 'model', sep='/')
 
     # Bring in model file and factor levels
-    load(paste(model_path, 'mars_model.RData', sep='/'))
+    load(paste(model_path, 'mars_model.rds', sep='/'))
 
     # Read in data
     conn <- textConnection(gsub('\\\\n', '\n', req$postBody))
