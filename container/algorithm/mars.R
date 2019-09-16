@@ -60,7 +60,7 @@ train <- function() {
     # Generate outputs
     mars_model <- model[!(names(model) %in% c('x', 'residuals', 'fitted.values'))]
     attributes(mars_model)$class <- 'mars'
-    save(mars_model, factor_levels, file=paste(model_path, 'mars_model.RData', sep='/'))
+    save(mars_model, factor_levels, file=paste(model_path, 'mars_model.rds', sep='/'))
     print(summary(mars_model))
 
     write.csv(model$fitted.values, paste(output_path, 'data/fitted_values.csv', sep='/'), row.names=FALSE)
@@ -69,7 +69,7 @@ train <- function() {
 
 # Setup scoring function
 serve <- function() {
-    app <- plumb(paste(prefix, 'plumber.R', sep='/'))
+    app <- plumb(paste('/opt/program', 'plumber.R', sep='/'))
     app$run(host='0.0.0.0', port=8080)}
 
 
