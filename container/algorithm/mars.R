@@ -69,7 +69,7 @@ train <- function() {
 
 # Setup scoring function
 serve <- function() {
-    app <- plumb(paste(prefix, 'plumber.R', sep='/'))
+    app <- plumb(paste('/opt/program', 'plumber.R', sep='/'))
     app$run(host='0.0.0.0', port=8080)}
 
 
