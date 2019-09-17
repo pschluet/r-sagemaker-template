@@ -17,9 +17,12 @@ RUN apt-get -y update && apt-get install -y --no-install-recommends \
     wget \
     r-base \
     r-base-dev \
+    libcurl4-openssl-dev \
+    libxml2-dev \
+    libssl-dev \
     ca-certificates
 
-RUN R -e "install.packages(c('mda', 'plumber'), repos='https://cloud.r-project.org')"
+RUN R -e "install.packages(c('mda', 'plumber', 'tidyverse', 'caret', 'forecast'), repos='https://cloud.r-project.org', dependencies=TRUE)"
 
 COPY algorithm /opt/program
 
