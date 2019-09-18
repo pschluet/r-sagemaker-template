@@ -40,7 +40,7 @@ You should get a response back from the server with predictions.
 
 The `container\local_test\test_dir` folder contains all of the files that are used for local testing. This folder structure gets mounted in your Docker image in SageMaker when training jobs are run and when API endpoints are deployed. The contents of this directory change depending on how you define your training job in SageMaker. Here are some modifications you can make to your local files to simulate different training job definition parameters:
 
-1. Update `input\config\hyperparameters.json` to specify specific hyperparameter inputs for your algorithm.
-1. Put input data files in the `input\data\train` folder.
-1. Model artifict outputs get written to the `model` folder during training jobs.
-1. Other outputs (transformed data or anything else you want) get written to the `output` folder. If your algorithm fails, write a file called `failure` to this directory that describes why the training failed. The contents of this file will be returned in the FailureReason field of the DescribeTrainingJob result (in SageMaker). For jobs that succeed, there is no reason to write this file as it will be ignored.
+- Update `input\config\hyperparameters.json` to specify specific hyperparameter inputs for your algorithm.
+- Put input data files in the `input\data\train` folder.
+- Model artifict outputs get written to the `model` folder during training jobs.
+- Other outputs (transformed data or anything else you want) get written to the `output` folder. If your algorithm fails, write a file called `failure` to this directory that describes why the training failed. The contents of this file will be returned in the FailureReason field of the DescribeTrainingJob result (in SageMaker). For jobs that succeed, there is no reason to write this file as it will be ignored.
