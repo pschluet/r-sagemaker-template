@@ -15,14 +15,15 @@ RUN apt-get -y update && apt-get install -y --install-recommends \
 
 RUN apt-get -y update && apt-get install -y --no-install-recommends \
     wget \
-    r-base \
-    r-base-dev \
+    r-base=3.6.1-3bionic \
+    r-base-dev=3.6.1-3bionic \
     libcurl4-openssl-dev \
     libxml2-dev \
     libssl-dev \
     ca-certificates
 
-RUN R -e "install.packages(c('mda', 'plumber', 'tidyverse', 'caret', 'forecast'), repos='https://cloud.r-project.org', dependencies=TRUE)"
+COPY install-packages.R install-packages.R
+RUN Rscript install-packages.R
 
 COPY algorithm /opt/program
 
