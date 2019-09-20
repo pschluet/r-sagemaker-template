@@ -22,6 +22,10 @@ RUN apt-get -y update && apt-get install -y --no-install-recommends \
     libssl-dev \
     ca-certificates
 
+# Add the Python requests library for integration tests
+RUN apt-get -y install python3-pip && \
+    pip3 install requests==2.22.0
+
 COPY install-packages.R install-packages.R
 RUN Rscript install-packages.R
 

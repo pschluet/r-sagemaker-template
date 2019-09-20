@@ -1,0 +1,73 @@
+#!/usr/bin/env python3
+
+import unittest
+import subprocess
+import requests
+import time
+# from train import train
+import os
+
+class TestServer(unittest.TestCase):
+
+    BASE_URL = 'http://localhost:8080'
+
+    @staticmethod
+    def process_running(process):
+        return process.poll() is None
+
+    @staticmethod
+    def server_started(process):
+        log_text = process.stderr.readline().decode('utf-8')
+        return 'Starting server to listen on port' in log_text
+
+    @staticmethod
+    def wait_until_server_is_up(process):
+        for i in range(10):
+            if not TestServer.process_running(process):
+                return False
+            if TestServer.server_started(process):
+                return True
+            time.sleep(0.1)
+        return False
+
+    @classmethod
+    def setUpClass(self):
+        self.server = subprocess.Popen(['Rscript', '/opt/program/mars.R', 'serve'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if not TestServer.wait_until_server_is_up(self.server): raise Exception('Server could not be started!')
+
+    @classmethod
+    def tearDownClass(self):
+        self.server.terminate()
+
+    def test_ping(self):
+        r = requests.get('{}/ping'.format(self.BASE_URL))
+        self.assertEqual(r.status_code, 200)
+
+    def test_invocations(self):
+        with open('/opt/program/test_payload.csv', 'rb') as f:
+            payload = f.read()
+        r = requests.post(
+            url='{}/invocations'.format(self.BASE_URL),
+            data=payload,
+            headers={'Content-Type': 'text/csv'}
+        )
+        self.assertEqual(r.text, '["5.27067952670696,5.97897841334169,6.3666811518088,6.29974739276174,5.96277765213058,6.72547231545638,6.01060697829358,6.84084230422974,6.36439224155573,-3.49668400154692,-4.25007395028862,-2.41644420370454,0.102896883151844,-2.72170733348031,-2.24840640537643,-2.44633176170061,-3.44027637965078,1.34337924058872,-2.28767335139669,-9.17297101933376,-7.44028018903725,-6.27655602909764,-10.4300822312474,-9.08406244693515,-7.7186984199189,-7.27905546407791,-7.32237375409424,-6.52640070511962"]')
+
+
+class TestTraining(unittest.TestCase):
+    def test_train(self):
+        # Clear the model file if it exists
+        model_path = '/opt/ml/model/mars_model.rds'
+        if os.path.exists(model_path): os.remove(model_path)
+
+        # Train the model
+        return_code = subprocess.call(['Rscript', '/opt/program/mars.R', 'train'])
+
+        # Make sure we created a new model file
+        self.assertTrue(os.path.exists(model_path))
+        # Make sure the training process had a success return code
+        self.assertEqual(return_code, 0)
+
+
+if __name__ == '__main__':
+    unittest.main()
