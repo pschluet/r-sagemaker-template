@@ -5,9 +5,9 @@
 
 # This will be used as the image on the local machine and combined with the account and 
 # region to form the repository name for ECR.
-image=$1
+image=r-base
 
-chmod +x container/algorithm/test
+chmod +x algorithm/test
 
 # Get the account number associated with the current IAM credentials
 account=$(aws sts get-caller-identity --query Account --output text)
